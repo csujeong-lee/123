@@ -1,0 +1,93 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/csujeong-lee/123/blob/main/10%EC%A3%BC%EC%B0%A8%20%EA%B3%BC%EC%A0%9C%20\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "import statsmodels.formula.api as smf\n",
+        "\n",
+        "data = {\n",
+        "    'humidity': [70, 65, 80, 55, 60, 85, 50, 75],\n",
+        "    'pressure': [1013, 1012, 1015, 1010, 1011, 1016, 1009, 1014],\n",
+        "    'temperature': [22.5, 24.0, 20.1, 26.5, 25.0, 18.5, 28.0, 21.3]\n",
+        "}\n",
+        "df = pd.DataFrame(data)\n",
+        "\n",
+        "model = smf.ols(formula='temperature ~ humidity + pressure', data=df).fit()\n",
+        "\n",
+        "new_data = {\n",
+        "    'humidity': [60, 75],\n",
+        "    'pressure': [1012, 1014]\n",
+        "}\n",
+        "new_df = pd.DataFrame(new_data)\n",
+        "\n",
+        "pred_frame = model.get_prediction(new_df).summary_frame(alpha=0.05)\n",
+        "\n",
+        "print('[예측 요약표]')\n",
+        "print(pred_frame)"
+      ],
+      "metadata": {
+        "id": "FW-U5af-cXwT"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import numpy as np\n",
+        "import pandas as pd\n",
+        "import statsmodels.formula.api as smf\n",
+        "from sklearn.metrics import mean_squared_error\n",
+        "\n",
+        "data = {\n",
+        "    'humidity': [70, 65, 80, 55, 60, 85, 50, 75],\n",
+        "    'pressure': [1013, 1012, 1015, 1010, 1011, 1016, 1009, 1014],\n",
+        "    'temperature': [22.5, 24.0, 20.1, 26.5, 25.0, 18.5, 28.0, 21.3]\n",
+        "}\n",
+        "df = pd.DataFrame(data)\n",
+        "\n",
+        "model = smf.ols(formula='temperature ~ humidity + pressure', data=df).fit()\n",
+        "\n",
+        "y_true = df['temperature']\n",
+        "y_pred = model.predict(df)\n",
+        "\n",
+        "mse = mean_squared_error(y_true, y_pred)\n",
+        "rmse = np.sqrt(mse)\n",
+        "\n",
+        "print('[오차지표]')\n",
+        "print('MSE :', mse)\n",
+        "print('RMSE:', rmse)"
+      ],
+      "metadata": {
+        "id": "rkclkz3WcXc4"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ],
+  "metadata": {
+    "colab": {
+      "name": "Colab 시작하기",
+      "toc_visible": true,
+      "provenance": [],
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
