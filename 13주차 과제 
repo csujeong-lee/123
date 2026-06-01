@@ -1,0 +1,91 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/csujeong-lee/123/blob/main/13%EC%A3%BC%EC%B0%A8%20%EA%B3%BC%EC%A0%9C%20\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(\"## [실습 1 보고서]\")\n",
+        "sig_vars1 = [var for var, pval in churn_model.pvalues.items() if pval < 0.05 and var != 'Intercept']\n",
+        "insig_vars1 = [var for var, pval in churn_model.pvalues.items() if pval >= 0.05 and var != 'Intercept']\n",
+        "\n",
+        "sig_str1 = \", \".join(sig_vars1)\n",
+        "insig_str1 = \", \".join(insig_vars1)\n",
+        "target_var1 = 'complaint_cnt' if 'complaint_cnt' in churn_model.params else sig_vars1[0]\n",
+        "target_odds1 = np.exp(churn_model.params[target_var1])\n",
+        "\n",
+        "print(f\"본 연구에서는 고객 이탈 여부를 설명하기 위해 로지스틱 회귀분석을 수행하였다.\")\n",
+        "print(f\"분석 결과, {sig_str1} 변수는 유의한 영향을 보였고(p < 0.05),\")\n",
+        "print(f\"특히 {target_var1} 변수의 오즈비는 {target_odds1:.4f}로 나타나\")\n",
+        "print(f\"해당 변수가 1단위 증가할 때 이탈 odds가 {target_odds1:.4f}배 변한다고 해석할 수 있다.\")\n",
+        "print(f\"반면 {insig_str1} 변수는 유의하지 않아 이탈에 직접적인 영향을 준다고 보기 어렵다.\")\n",
+        "print(f\"또한 모형의 accuracy는 {churn_acc:.4f}, error rate는 {churn_err:.4f}로 나타났다.\\n\")\n",
+        "\n",
+        "print(\"## [실습 2 보고서]\")\n",
+        "sig_vars2 = [var for var, pval in loan_model.pvalues.items() if pval < 0.05 and var != 'Intercept']\n",
+        "sig_str2 = \", \".join(sig_vars2)\n",
+        "target_var2 = 'debt_ratio' if 'debt_ratio' in loan_model.params else '특정'\n",
+        "\n",
+        "print(f\"본 연구에서는 대출 연체 여부를 설명하기 위해 로지스틱 회귀분석을 수행하였다.\")\n",
+        "print(f\"분석 결과, {sig_str2} 변수는\")\n",
+        "print(f\"모두 유의한 영향을 보였다.\")\n",
+        "print(f\"특히 {target_var2} 변수의 오즈비가 크게 나타나\")\n",
+        "print(f\"해당 변수의 증가가 연체 발생 odds를 크게 높이는 것으로 해석되었다.\")\n",
+        "print(f\"모형의 log-likelihood는 {loan_model.llf:.4f}, residual deviance는 {loan_dev:.4f}이며,\")\n",
+        "print(f\"accuracy는 {loan_acc:.4f}, error rate는 {loan_err:.4f}로 나타났다.\")"
+      ],
+      "metadata": {
+        "id": "w6bsDgVaYeAj"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "1. 예측 기준값(threshold)을 0.5가 아니라 0.4 또는 0.6으로 바꾸면 accuracy는 어떻게 달라지는가?\n",
+        "\n",
+        "기준값을 0.4로 낮추면 모델이 사건(이탈/연체)이 발생했다고 예측하는 비율이 늘어나 민감도(Sensitivity)는 높아지지만 특이도(Specificity)는 낮아집니다. 반대로 0.6으로 높이면 사건 발생 예측이 줄어 특이도가 높아지고 민감도는 낮아집니다. 전체 정확도(Accuracy)는 데이터의 실제 양성과 음성 비율 분포에 따라 임계값이 최적점에서 멀어질 경우 하락하게 됩니다.\n",
+        "\n",
+        "2. churn 데이터에서 가장 영향력이 큰 변수는 무엇인가?\n",
+        "\n",
+        "회귀계수의 절댓값이 가장 크고, 오즈비(Odds Ratio)가 1에서 가장 멀리 떨어져 있는 변수입니다. 실습 기준으로는 고객 이탈 위험을 크게 증가시키는 양(+)의 계수를 가진 complaint_cnt(불만 건수) 또는 오즈비를 크게 감소시키는 음(-)의 계수를 가진 usage_hour(이용시간)가 가장 큰 영향력을 가집니다.\n",
+        "\n",
+        "3. loan default 데이터에서 실무적으로 가장 중요한 관리 변수는 무엇인가?\n",
+        "\n",
+        "오즈비가 가장 크게 나타나 연체 발생 odds를 기하급수적으로 폭증시키는 debt_ratio(부채비율)입니다. 연체 위험을 사전에 차단하기 위해 실무적으로 고객의 부채비율을 가장 우선적으로 통제하고 관리해야 합니다.\n",
+        "\n",
+        "4. 오즈비가 1보다 작은 경우와 1보다 큰 경우를 각각 실제 문장으로 써 보라.\n",
+        "\n",
+        "1보다 작은 경우: \"usage_hour의 오즈비가 0.85로 나타나, 서비스 월 이용시간이 1시간 증가할 때 고객 이탈 odds가 0.85배로 감소(15% 감소)한다고 해석할 수 있다.\"\n",
+        "\n",
+        "1보다 큰 경우: \"complaint_cnt의 오즈비가 1.70으로 나타나, 최근 불만 건수가 1건 증가할 때 고객 이탈 odds가 1.7배로 증가(70% 증가)한다고 해석할 수 있다.\""
+      ],
+      "metadata": {
+        "id": "2rCgjReKYuuU"
+      }
+    }
+  ],
+  "metadata": {
+    "colab": {
+      "name": "Colab 시작하기",
+      "toc_visible": true,
+      "provenance": [],
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
